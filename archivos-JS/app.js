@@ -15,24 +15,28 @@ stock.forEach((elm) => {
   cardClon.querySelector("h4").innerText = "$" + elm.precio;
   cardClon.querySelector("button").innerText = "comprar";
 
-  lista.appendChild(cardClon)
+  lista.appendChild(cardClon);
 
   cardClon.children[0].src = elm.img;
 
   // function sendCarrito()
-  cardClon.querySelector("button").addEventListener("click", function sendCarrito() {
-    let productoId = elm.id;
-    let cantidad = Number(prompt("Cantidad:"));
-    let producto = stock.find((product) => product.id === productoId);
-    producto.cantidad = cantidad;
-    producto.total = producto.precio * cantidad;
-    carrito.push(producto);
-    // console.log(carrito)
+  cardClon
+    .querySelector("button")
+    .addEventListener("click", function sendCarrito() {
+      let productoId = elm.id;
+      let cantidad = Number(prompt("Cantidad:"));
 
-    localStorage.setItem("guardarCarrito", JSON.stringify(carrito));
-    let carrito1 = JSON.parse(sessionStorage.getItem("guardarCarrito"));
-  
-  })
+      if (!isNaN(cantidad) && cantidad != null && cantidad != "") {
+        let producto = stock.find((product) => product.id === productoId);
+        producto.cantidad = cantidad;
+        producto.total = producto.precio * cantidad;
+        carrito.push(producto);
+      }
+      // console.log(carrito)
+
+      localStorage.setItem("guardarCarrito", JSON.stringify(carrito));
+      const carrito1 = JSON.parse(localStorage.getItem("guardarCarrito"));
+    });
 });
 
 verCarrito.addEventListener("click", () => {
@@ -40,8 +44,8 @@ verCarrito.addEventListener("click", () => {
   modalContainer.innerText = "";
   modalContainer.style.display = "flex";
   const modalButton = document.createElement("h2");
-  modalButton.className = "modal-header-button"
-  modalButton.innerText = "❌"
+  modalButton.className = "modal-header-button";
+  modalButton.innerText = "❌";
 
   modalButton.addEventListener("click", () => {
     modalContainer.style.display = "none";
@@ -61,7 +65,7 @@ verCarrito.addEventListener("click", () => {
     carritoContent.innerHTML = `
     <img src="${elm.img}">
     <h5 class="card-title">${elm.nombre}</h5>
-    <h4 style="text-align:center;">$${elm.total} * ${elm.cantidad} Unidades</h4>`;
+    <h4 style="text-align:center;">$${elm.precio} * ${elm.cantidad} Unidades =$${elm.total}</h4>`;
 
     modalContainer.appendChild(carritoContent);
   });
@@ -74,17 +78,16 @@ verCarrito.addEventListener("click", () => {
     return total;
   }
 
-  const total = calcularTotal(carrito)
+  const total = calcularTotal(carrito);
   let totaletiquet = document.createElement("div");
   totaletiquet.className = "total-content";
-  totaletiquet.innerHTML = `Tu Total a Pagar es: $${total} <br>`
+  totaletiquet.innerHTML = `Tu Total a Pagar es: $${total} <br>
+  <a href="#formulario" class=" renderizar"> ¿Terminaste de comprar? <br>👉Completa el formulario de Contacto👈</a>
+  `;
 
   // si yo quiero usar el let respuesta=`...(lo de abajo)` pero si llamo ${nombre}> da undefined y si pongo ${infoForm.nombre}> da [object HTMLInputElement]
   // como deberia llamarlo entonces?
   // Hola ${infoForm.nombre}, Gracias por comprar con nosotros. En breve nos contactaremos contigo al tel:${infoForm.tel} y/o correo:${infoForm.correo} para definir el modo de pago. Esperamos verte pronto..
 
   modalContainer.appendChild(totaletiquet);
-
 });
-
-
